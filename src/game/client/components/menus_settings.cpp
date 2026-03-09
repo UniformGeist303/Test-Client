@@ -1905,6 +1905,17 @@ void CMenus::RenderSettingsAppearance(CUIRect MainView)
 
 		// Switches of the various normal HUD elements
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowhudHealthAmmo, Localize("Show health, shields and ammo"), &g_Config.m_ClShowhudHealthAmmo, &LeftView, LineSize);
+		if(g_Config.m_ClShowhudHealthAmmo)
+		{
+			CUIRect NumericModeRect;
+			LeftView.HSplitTop(LineSize, &NumericModeRect, &LeftView);
+			NumericModeRect.VSplitLeft(10.0f, nullptr, &NumericModeRect);
+			DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowhudHealthArmorText, Localize("Show health, shields, and ammo as numbers"), &g_Config.m_ClShowhudHealthArmorText, &NumericModeRect, NumericModeRect.h);
+		}
+		else
+		{
+			LeftView.HSplitTop(LineSize, nullptr, &LeftView);
+		}
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowhudScore, Localize("Show score"), &g_Config.m_ClShowhudScore, &LeftView, LineSize);
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowLocalTimeAlways, Localize("Show local time always"), &g_Config.m_ClShowLocalTimeAlways, &LeftView, LineSize);
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClSpecCursor, Localize("Show spectator cursor"), &g_Config.m_ClSpecCursor, &LeftView, LineSize);
