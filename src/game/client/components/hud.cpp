@@ -945,31 +945,69 @@ void CHud::RenderAmmoHealthAndArmor(const CNetObj_Character *pCharacter)
 		}
 		else if(CurWeapon >= 0 && GameClient()->m_GameSkin.m_aSpriteWeaponProjectiles[CurWeapon].IsValid())
 		{
-			Graphics()->TextureSet(GameClient()->m_GameSkin.m_aSpriteWeaponProjectiles[CurWeapon]);
-			if(AmmoOffsetY > 0)
+			if(g_Config.m_ClShowhudHealthArmorText)
 			{
-				Graphics()->RenderQuadContainerEx(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, std::clamp(pCharacter->m_AmmoCount, 0, 10), 0, AmmoOffsetY);
+				// numerical ammo: single projectile icon + number
+				Graphics()->TextureSet(GameClient()->m_GameSkin.m_aSpriteWeaponProjectiles[CurWeapon]);
+				if(AmmoOffsetY > 0)
+				{
+					Graphics()->RenderQuadContainerEx(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, 1, 0, AmmoOffsetY);
+				}
+				else
+				{
+					Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, 1);
+				}
+				char aBuf[16];
+				str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_AmmoCount));
+				TextRender()->Text(18.0f, 5.0f + AmmoOffsetY, 6.0f, aBuf, -1.0f);
 			}
 			else
 			{
-				Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, std::clamp(pCharacter->m_AmmoCount, 0, 10));
+				Graphics()->TextureSet(GameClient()->m_GameSkin.m_aSpriteWeaponProjectiles[CurWeapon]);
+				if(AmmoOffsetY > 0)
+				{
+					Graphics()->RenderQuadContainerEx(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, std::clamp(pCharacter->m_AmmoCount, 0, 10), 0, AmmoOffsetY);
+				}
+				else
+				{
+					Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_aAmmoOffset[CurWeapon] + QuadOffsetSixup, std::clamp(pCharacter->m_AmmoCount, 0, 10));
+				}
 			}
 		}
 	}
 
 	if(GameClient()->m_GameInfo.m_HudHealthArmor)
 	{
-		// health display
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHealthFull);
-		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_HealthOffset + QuadOffsetSixup, minimum(pCharacter->m_Health, 10));
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHealthEmpty);
-		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_EmptyHealthOffset + QuadOffsetSixup + minimum(pCharacter->m_Health, 10), 10 - minimum(pCharacter->m_Health, 10));
+		if(g_Config.m_ClShowhudHealthArmorText)
+		{
+			char aBuf[16];
 
-		// armor display
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteArmorFull);
-		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_ArmorOffset + QuadOffsetSixup, minimum(pCharacter->m_Armor, 10));
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteArmorEmpty);
-		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_ArmorOffset + QuadOffsetSixup + minimum(pCharacter->m_Armor, 10), 10 - minimum(pCharacter->m_Armor, 10));
+			// health display: single icon + number so values above 10 remain readable on modded servers
+			Graphics()->TextureSet(pCharacter->m_Health > 0 ? GameClient()->m_GameSkin.m_SpriteHealthFull : GameClient()->m_GameSkin.m_SpriteHealthEmpty);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, (pCharacter->m_Health > 0 ? m_HealthOffset : m_EmptyHealthOffset) + QuadOffsetSixup, 1);
+			str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_Health));
+			TextRender()->Text(18.0f, 5.0f, 6.0f, aBuf, -1.0f);
+
+			// armor display: use empty icon for zero shields to make the state obvious
+			Graphics()->TextureSet(pCharacter->m_Armor > 0 ? GameClient()->m_GameSkin.m_SpriteArmorFull : GameClient()->m_GameSkin.m_SpriteArmorEmpty);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, (pCharacter->m_Armor > 0 ? m_ArmorOffset : m_EmptyArmorOffset) + QuadOffsetSixup, 1);
+			str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_Armor));
+			TextRender()->Text(18.0f, 17.0f, 6.0f, aBuf, -1.0f);
+		}
+		else
+		{
+			// health display
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHealthFull);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_HealthOffset + QuadOffsetSixup, minimum(pCharacter->m_Health, 10));
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHealthEmpty);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_EmptyHealthOffset + QuadOffsetSixup + minimum(pCharacter->m_Health, 10), 10 - minimum(pCharacter->m_Health, 10));
+
+			// armor display
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteArmorFull);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_ArmorOffset + QuadOffsetSixup, minimum(pCharacter->m_Armor, 10));
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteArmorEmpty);
+			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, m_ArmorOffset + QuadOffsetSixup + minimum(pCharacter->m_Armor, 10), 10 - minimum(pCharacter->m_Armor, 10));
+		}
 	}
 }
 
