@@ -219,6 +219,64 @@ private:
 				return nullptr;
 			return GameClient()->m_aClients[Id].m_aClan;
 		}
+		else if(Str == "chat_count")
+		{
+			return GameClient()->m_Chat.GetLineCount();
+		}
+		else if(Str == "chat_text")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return std::string(Info.m_aText);
+		}
+		else if(Str == "chat_sender")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return std::string(Info.m_aName);
+		}
+		else if(Str == "chat_sender_id")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return Info.m_ClientId;
+		}
+		else if(Str == "chat_team")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return Info.m_Team;
+		}
+		else if(Str == "chat_whisper")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return Info.m_Whisper;
+		}
+		else if(Str == "chat_highlighted")
+		{
+			if(!std::holds_alternative<int>(Arg))
+				return nullptr;
+			auto Info = GameClient()->m_Chat.GetLineInfo(std::get<int>(Arg));
+			if(!Info.m_Valid)
+				return nullptr;
+			return Info.m_Highlighted;
+		}
 		throw std::string("No state with name '") + Str + std::string("'");
 	}
 
@@ -235,6 +293,14 @@ public:
 		});
 		m_ScriptingCtx.AddFunction("state", [this](const std::string &Str, const CScriptingCtx::Any &Arg) {
 			return State(Str, Arg);
+		});
+		m_ScriptingCtx.AddFunction("chat", [this](const std::string &Str) {
+			log_info(SCRIPTING_IMPL "/chat", "%s", Str.c_str());
+			GameClient()->m_Chat.SendChat(0, Str.c_str());
+		});
+		m_ScriptingCtx.AddFunction("chat_team", [this](const std::string &Str) {
+			log_info(SCRIPTING_IMPL "/chat_team", "%s", Str.c_str());
+			GameClient()->m_Chat.SendChat(1, Str.c_str());
 		});
 	}
 	void Run(const char *pFilename, const char *pArgs)
