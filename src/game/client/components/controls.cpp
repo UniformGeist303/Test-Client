@@ -242,6 +242,12 @@ int CControls::SnapInput(int *pData)
 			if(MaxDistance > 5 && MaxDistance < 1000) // Don't scale if angle bind or reduces precision
 				Pos *= 1000.0f / (float)MaxDistance;
 		}
+		if(g_Config.m_TcZoomCursor && !GameClient()->m_Snap.m_SpecInfo.m_Active)
+		{
+			float Zoom = GameClient()->m_Camera.m_Zoom;
+			if(Zoom > 0.0f && Zoom != 1.0f)
+				Pos /= Zoom;
+		}
 		m_aInputData[g_Config.m_ClDummy].m_TargetX = (int)Pos.x;
 		m_aInputData[g_Config.m_ClDummy].m_TargetY = (int)Pos.y;
 
@@ -271,6 +277,12 @@ int CControls::SnapInput(int *pData)
 			const int MaxDistance = g_Config.m_ClDyncam ? g_Config.m_ClDyncamMaxDistance : g_Config.m_ClMouseMaxDistance;
 			if(MaxDistance > 5 && MaxDistance < 1000) // Don't scale if angle bind or reduces precision
 				Pos *= 1000.0f / (float)MaxDistance;
+		}
+		if(g_Config.m_TcZoomCursor && !GameClient()->m_Snap.m_SpecInfo.m_Active)
+		{
+			float Zoom = GameClient()->m_Camera.m_Zoom;
+			if(Zoom > 0.0f && Zoom != 1.0f)
+				Pos /= Zoom;
 		}
 		m_aInputData[g_Config.m_ClDummy].m_TargetX = (int)Pos.x;
 		m_aInputData[g_Config.m_ClDummy].m_TargetY = (int)Pos.y;
