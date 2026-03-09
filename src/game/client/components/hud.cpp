@@ -959,7 +959,7 @@ void CHud::RenderAmmoHealthAndArmor(const CNetObj_Character *pCharacter)
 				}
 				char aBuf[16];
 				str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_AmmoCount));
-				TextRender()->Text(18.0f, 5.0f + AmmoOffsetY, 6.0f, aBuf, -1.0f);
+				TextRender()->Text(18.0f, 5.0f + AmmoOffsetY + 2.0f, 6.0f, aBuf, -1.0f);
 			}
 			else
 			{
@@ -986,13 +986,13 @@ void CHud::RenderAmmoHealthAndArmor(const CNetObj_Character *pCharacter)
 			Graphics()->TextureSet(pCharacter->m_Health > 0 ? GameClient()->m_GameSkin.m_SpriteHealthFull : GameClient()->m_GameSkin.m_SpriteHealthEmpty);
 			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, (pCharacter->m_Health > 0 ? m_HealthOffset : m_EmptyHealthOffset) + QuadOffsetSixup, 1);
 			str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_Health));
-			TextRender()->Text(18.0f, 5.0f, 6.0f, aBuf, -1.0f);
+			TextRender()->Text(18.0f, 5.0f + 2.0f, 6.0f, aBuf, -1.0f);
 
 			// armor display: use empty icon for zero shields to make the state obvious
 			Graphics()->TextureSet(pCharacter->m_Armor > 0 ? GameClient()->m_GameSkin.m_SpriteArmorFull : GameClient()->m_GameSkin.m_SpriteArmorEmpty);
 			Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, (pCharacter->m_Armor > 0 ? m_ArmorOffset : m_EmptyArmorOffset) + QuadOffsetSixup, 1);
 			str_format(aBuf, sizeof(aBuf), "%d", maximum(0, pCharacter->m_Armor));
-			TextRender()->Text(18.0f, 17.0f, 6.0f, aBuf, -1.0f);
+			TextRender()->Text(18.0f, 17.0f + 2.0f, 6.0f, aBuf, -1.0f);
 		}
 		else
 		{
