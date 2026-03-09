@@ -246,7 +246,7 @@ int CControls::SnapInput(int *pData)
 		{
 			float Zoom = GameClient()->m_Camera.m_Zoom;
 			if(Zoom > 0.0f && Zoom != 1.0f)
-				Pos /= Zoom;
+				Pos *= Zoom;
 		}
 		m_aInputData[g_Config.m_ClDummy].m_TargetX = (int)Pos.x;
 		m_aInputData[g_Config.m_ClDummy].m_TargetY = (int)Pos.y;
@@ -282,7 +282,7 @@ int CControls::SnapInput(int *pData)
 		{
 			float Zoom = GameClient()->m_Camera.m_Zoom;
 			if(Zoom > 0.0f && Zoom != 1.0f)
-				Pos /= Zoom;
+				Pos *= Zoom;
 		}
 		m_aInputData[g_Config.m_ClDummy].m_TargetX = (int)Pos.x;
 		m_aInputData[g_Config.m_ClDummy].m_TargetY = (int)Pos.y;
