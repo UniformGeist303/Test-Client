@@ -224,5 +224,24 @@ public:
 	//
 	// It uses team or public chat depending on m_Mode.
 	void SendChatQueued(const char *pLine);
+
+	// ----- scripting accessors -----
+
+	struct CChatLineInfo
+	{
+		bool m_Valid;
+		int m_ClientId;
+		char m_aName[64];
+		char m_aText[MAX_LINE_LENGTH];
+		bool m_Team;
+		bool m_Whisper;
+		bool m_Highlighted;
+	};
+
+	// Returns info about the i-th most recent chat line (0 = newest).
+	CChatLineInfo GetLineInfo(int ReverseIndex) const;
+
+	// Returns the number of initialized chat lines.
+	int GetLineCount() const;
 };
 #endif

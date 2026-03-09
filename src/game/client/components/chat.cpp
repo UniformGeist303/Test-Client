@@ -1515,3 +1515,38 @@ void CChat::SendChatQueued(const char *pLine)
 		str_copy(pEntry->m_aText, pLine, Length + 1);
 	}
 }
+
+CChat::CChatLineInfo CChat::GetLineInfo(int ReverseIndex) const
+{
+	CChatLineInfo Info;
+	Info.m_Valid = false;
+
+	if(ReverseIndex < 0 || ReverseIndex >= MAX_LINES)
+		return Info;
+
+	const CLine &Line = m_aLines[((m_CurrentLine - ReverseIndex) % MAX_LINES + MAX_LINES) % MAX_LINES];
+	if(!Line.m_Initialized)
+		return Info;
+
+	Info.m_Valid = true;
+	Info.m_ClientId = Line.m_ClientId;
+	str_copy(Info.m_aName, Line.m_aName);
+	str_copy(Info.m_aText, Line.m_aText);
+	Info.m_Team = Line.m_Team;
+	Info.m_Whisper = Line.m_Whisper;
+	Info.m_Highlighted = Line.m_Highlighted;
+	return Info;
+}
+
+int CChat::GetLineCount() const
+{
+	int Count = 0;
+	for(int i = 0; i < MAX_LINES; i++)
+	{
+		const CLine &Line = m_aLines[((m_CurrentLine - i) % MAX_LINES + MAX_LINES) % MAX_LINES];
+		if(!Line.m_Initialized)
+			break;
+		Count++;
+	}
+	return Count;
+}
